@@ -18,7 +18,7 @@ class DataValidationError(Exception):
     pass
 
 
-class YourResourceModel(db.Model):
+class shopcart(db.Model):
     """
     Class that represents a <your resource model name>
     """
