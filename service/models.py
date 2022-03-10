@@ -20,7 +20,7 @@ class DataValidationError(Exception):
 
 class ShopCart(db.Model):
     """
-    Class that represents a <your resource model name>
+    Class that represents a shop cart
     """
 
     app = None
