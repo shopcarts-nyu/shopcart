@@ -15,7 +15,7 @@ from service.routes import app, init_db
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
-class TestYourResourceServer(TestCase):
+class TestShopCart(TestCase):
     """ REST API Server Tests """
 
     @classmethod
