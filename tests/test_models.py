@@ -1,16 +1,16 @@
 """
-Test cases for YourResourceModel Model
+Test cases for ShopCart Model
 """
 import logging
 import unittest
 import os
-from service.models import YourResourceModel, DataValidationError, db
+from service.models import ShopCart, DataValidationError, db
 
 ######################################################################
 #  <your resource name>   M O D E L   T E S T   C A S E S
 ######################################################################
-class TestYourResourceModel(unittest.TestCase):
-    """ Test Cases for YourResourceModel Model """
+class TestShopCart(unittest.TestCase):
+    """ Test Cases for ShopCart Model """
 
     @classmethod
     def setUpClass(cls):
