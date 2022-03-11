@@ -26,8 +26,11 @@ class ShopCart(db.Model):
     app = None
 
     # Table Schema
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(63))
+    customer_id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+    quantity = db.Column(db.Integer)
+    price = db.Column(db.Float)
 
     def __repr__(self):
         return "<ShopCart %r id=[%s]>" % (self.name, self.id)
