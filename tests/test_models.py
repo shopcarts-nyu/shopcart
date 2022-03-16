@@ -46,7 +46,7 @@ class TestShopCart(unittest.TestCase):
         """Create a shopcart and assert that it exists"""
         shopcart = ShopCart(name="MyCart1")
         self.assertTrue(shopcart is not None)
-        self.assertEqual(shopcart.id, None)
+        self.assertEqual(shopcart.customer_id, None)
         self.assertEqual(shopcart.name, "MyCart1")
 
     def test_update_a_shopcart(self):
@@ -55,8 +55,9 @@ class TestShopCart(unittest.TestCase):
         logging.debug(shopcart)
         shopcart.create()
         logging.debug(shopcart)
-        self.assertEqual(shopcart.customer_id, 1)
-        self.assertEqual(shopcart.product_id, 1)
+        self.assertEqual(shopcart.customer_id, 0)
+        self.assertEqual(shopcart.product_id, 0)
+        logging.debug(shopcart.customer_id)
         # Change it an save it
         shopcart.price = 1
         shopcart.quantity = 1
