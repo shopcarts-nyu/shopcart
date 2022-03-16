@@ -47,9 +47,10 @@ def create_shopcarts():
     shopcart.deserialize(request.get_json())
     shopcart.create()
     message = shopcart.serialize()
-    location_url = url_for("get_shopcarts", shopcart_id=shopcart.id, _external=True)
+    location_url = url_for("get_shopcarts", customer_id=shopcart.customer_id, 
+                                            product_id = shopcart.product_id, _external=True)
 
-    app.logger.info("Shopcart with ID [%s] created.", shopcart.id)
+    app.logger.info("Shopcart for customer [%s] for product [%s] created.", shopcart.customer_id, shopcart.product_id)
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )

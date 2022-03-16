@@ -59,7 +59,13 @@ class ShopCart(db.Model):
 
     def serialize(self):
         """ Serializes a ShopCart into a dictionary """
-        return {"id": self.id, "name": self.name}
+        return {
+            "customer_id": self.customer_id, 
+            "product_id": self.product_id, 
+            "name": self.name, 
+            "quantity": self.quantity, 
+            "price": self.price
+            }
 
     def deserialize(self, data):
         """
@@ -69,7 +75,11 @@ class ShopCart(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
+            self.customer_id = data["customer_id"]
+            self.product_id = data["product_id"]
             self.name = data["name"]
+            self.quantity = data["quantity"]
+            self.price = data["price"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid ShopCart: missing " + error.args[0]
