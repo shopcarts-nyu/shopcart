@@ -3,7 +3,9 @@ ShopCart Service
 Paths:
 ------
 GET /shopcarts - Returns a list all of the ShopCarts
-GET /shopcarts/{id} - Returns the ShopCart with a given id number
+GET /shopcarts/{customer_id}/{product_id} - Returns the ShopCart with a given id number
+POST /shopcarts - creates a new ShopCart record in the database
+PUT /shopcarts/{customer_id}/{product_id} - updates a ShopCart record in the database
 // TODO: Add more paths here
 """
 
@@ -12,6 +14,7 @@ import sys
 import logging
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from . import status  # HTTP Status Codes
+from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
@@ -55,6 +58,28 @@ def create_shopcarts():
     )
 
 ######################################################################
+# UPDATE AN EXISTING SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["PUT"])
+def update_shopcarts(customer_id, product_id):
+    """
+    Update a shopcart
+    This endpoint will update a shopcart based the body that is posted
+    """
+    app.logger.info("Request to update shopcart with id [%s] for product [%s]", shopcart.customer_id, shopcart.product_id)
+    check_content_type("application/json")
+    shopcart = ShopCart.find((customer_id, product_id))
+    if not shopcart:
+        raise NotFound("Shopcart with id '{}' for product '{}' was not found.".format((customer_id, product_id)))
+    shopcart.deserialize(request.get_json())
+    shopcart.customer_id = customer_id
+    shopcart.product_id= product_id
+    shopcart.update()
+
+    app.logger.info("shopcart with ID [%s] for product [%s] updated.", shopcart.customer_id, shopcart.product_id)
+    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
@@ -74,24 +99,3 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
-
-######################################################################
-# UPDATE AN EXISTING SHOPCART
-######################################################################
-@app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["PUT"])
-def update_shopcarts(customer_id, product_id):
-    """
-    Update a shopcart
-    This endpoint will update a shopcart based the body that is posted
-    """
-    app.logger.info("Request to update shopcart with id [%s] for product [%s]", shopcart.customer_id, shopcart.product_id)
-    check_content_type("application/json")
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-    pet.deserialize(request.get_json())
-    pet.id = pet_id
-    pet.update()
-
-    app.logger.info("Pet with ID [%s] updated.", pet.id)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
