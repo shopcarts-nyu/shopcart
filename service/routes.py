@@ -74,3 +74,24 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
+
+######################################################################
+# UPDATE AN EXISTING SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["PUT"])
+def update_shopcarts(customer_id, product_id):
+    """
+    Update a shopcart
+    This endpoint will update a shopcart based the body that is posted
+    """
+    app.logger.info("Request to update shopcart with id [%s] for product [%s]", shopcart.customer_id, shopcart.product_id)
+    check_content_type("application/json")
+    pet = Pet.find(pet_id)
+    if not pet:
+        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
+    pet.deserialize(request.get_json())
+    pet.id = pet_id
+    pet.update()
+
+    app.logger.info("Pet with ID [%s] updated.", pet.id)
+    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
