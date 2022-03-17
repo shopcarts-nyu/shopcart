@@ -75,8 +75,8 @@ class TestShopCart(unittest.TestCase):
         # but the data did change
         shopcarts = ShopCart.all()
         self.assertEqual(len(shopcarts), 1)
-        self.assertEqual(shopcarts[0].customer_id, 1)
-        self.assertEqual(shopcarts[0].product_id, 1)
+        self.assertEqual(shopcarts[0].customer_id, 0)
+        self.assertEqual(shopcarts[0].product_id, 0)
         self.assertEqual(shopcarts[0].price, 1)
         self.assertEqual(shopcarts[0].quantity, 1)
 

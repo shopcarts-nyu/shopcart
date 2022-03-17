@@ -49,7 +49,7 @@ class ShopCart(db.Model):
         Updates a ShopCart to the database
         """
         logger.info("Saving %s", self.name)
-        if not self.customer_id or not self.product_id:
+        if self.customer_id is None or self.product_id is None:
             raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
