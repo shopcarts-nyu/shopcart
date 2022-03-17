@@ -36,6 +36,23 @@ def index():
     )
 
 ######################################################################
+# RETRIEVE A SHOPCART WITH ALL ITEMS IN IT
+######################################################################
+@app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["GET"])
+def get_shopcarts(customer_id, product_id):
+    """
+    Retrieve a single Shopcart
+    This endpoint will return a Shopcart based on it's id
+    """
+    app.logger.info("Request for shopcart with id: %s and product with id: %s", customer_id, product_id)
+    shopcart = ShopCart.find((customer_id, product_id))
+    if not shopcart:
+        raise NotFound("Shopcart with id '{}' for product '{}' was not found.".format(customer_id, product_id))
+
+    app.logger.info("Returning shopcart: %s", shopcart.name)
+    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
+
+######################################################################
 # ADD A NEW SHOPCART
 ######################################################################
 @app.route("/shopcarts", methods=["POST"])
@@ -67,7 +84,7 @@ def update_shopcarts(customer_id, product_id):
     Update a shopcart
     This endpoint will update a shopcart based the body that is posted
     """
-    app.logger.info("Request to update shopcart with id [%s] for product [%s]", shopcart.customer_id, shopcart.product_id)
+    app.logger.info("Request to update shopcart with id [%s] for product [%s]", customer_id, product_id)
     check_content_type("application/json")
     shopcart = ShopCart.find((customer_id, product_id))
     if not shopcart:
