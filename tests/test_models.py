@@ -74,8 +74,8 @@ class TestShopCart(unittest.TestCase):
         logging.debug(shopcart)
         shopcart.create()
         logging.debug(shopcart)
-        self.assertEqual(shopcart.customer_id, 0)
-        self.assertEqual(shopcart.product_id, 0)
+        self.assertEqual(shopcart.customer_id, 1)
+        self.assertEqual(shopcart.product_id, 1)
         logging.debug(shopcart.customer_id)
         # Change it an save it
         shopcart.price = 1
@@ -91,8 +91,8 @@ class TestShopCart(unittest.TestCase):
         # but the data did change
         shopcarts = ShopCart.all()
         self.assertEqual(len(shopcarts), 1)
-        self.assertEqual(shopcarts[0].customer_id, 0)
-        self.assertEqual(shopcarts[0].product_id, 0)
+        self.assertEqual(shopcarts[0].customer_id, 1)
+        self.assertEqual(shopcarts[0].product_id, 1)
         self.assertEqual(shopcarts[0].price, 1)
         self.assertEqual(shopcarts[0].quantity, 1)
 
