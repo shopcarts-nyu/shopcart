@@ -33,15 +33,14 @@ class ShopCart(db.Model):
     price = db.Column(db.Float)
 
     def __repr__(self):
-        return "<ShopCart %r customer_id=[%s] product_id=[%s]>" % (self.name, self.customer_id, self.product_id)
+        return "<ShopCart %r customer_id=[%s] product_id=[%s]>" % (self.name, 
+            self.customer_id, self.product_id)
 
     def create(self):
         """
         Creates a ShopCart to the database
         """
         logger.info("Creating %s", self.name)
-        self.customer_id = None  # id must be none to generate next primary key
-        self.product_id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
 
@@ -69,7 +68,13 @@ class ShopCart(db.Model):
 
     def serialize(self):
         """ Serializes a ShopCart into a dictionary """
-        return {"id": self.id, "name": self.name}
+        return {
+            "customer_id": self.customer_id, 
+            "product_id": self.product_id, 
+            "name": self.name, 
+            "quantity": self.quantity, 
+            "price": self.price
+            }
 
     def deserialize(self, data):
         """
@@ -79,7 +84,11 @@ class ShopCart(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
+            self.customer_id = data["customer_id"]
+            self.product_id = data["product_id"]
             self.name = data["name"]
+            self.quantity = data["quantity"]
+            self.price = data["price"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid ShopCart: missing " + error.args[0]
