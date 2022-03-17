@@ -128,11 +128,11 @@ class ShopCart(db.Model):
         return cls.query.get_or_404(by_id)
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_customer_id(cls, customer_id):
         """Returns all ShopCarts with the given name
 
         Args:
             name (string): the name of the ShopCarts you want to match
         """
-        logger.info("Processing name query for %s ...", name)
-        return cls.query.filter(cls.name == name)
+        logger.info("Processing name query for %s ...", customer_id)
+        return cls.query.filter(cls.customer_id == customer_id)

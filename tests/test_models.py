@@ -52,14 +52,30 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcart.price, 100)
         self.assertEqual(shopcart.quantity, 1)
 
+    def test_read_a_shopcart(self):
+        """Read a ShopCart"""
+        shopcart = ShopCartFactory()
+        logging.debug(shopcart)
+        shopcart.create()
+        self.assertEqual(shopcart.customer_id, 0)
+        # Fetch it back 
+        found_shopcart = shopcart.find_by_customer_id(shopcart.customer_id)
+        items_in_found_shopcart = list(found_shopcart)
+        self.assertEqual(len(items_in_found_shopcart), 1)
+        self.assertEqual(items_in_found_shopcart[0].customer_id, shopcart.customer_id)
+        self.assertEqual(items_in_found_shopcart[0].product_id, shopcart.product_id)
+        self.assertEqual(items_in_found_shopcart[0].name, shopcart.name)
+        self.assertEqual(items_in_found_shopcart[0].quantity, shopcart.quantity)
+        self.assertEqual(items_in_found_shopcart[0].price, shopcart.price)
+
     def test_update_a_shopcart(self):
         """Update a shopcart"""
         shopcart = ShopCartFactory()
         logging.debug(shopcart)
         shopcart.create()
         logging.debug(shopcart)
-        self.assertEqual(shopcart.customer_id, 0)
-        self.assertEqual(shopcart.product_id, 0)
+        self.assertEqual(shopcart.customer_id, 1)
+        self.assertEqual(shopcart.product_id, 1)
         logging.debug(shopcart.customer_id)
         # Change it an save it
         shopcart.price = 1
@@ -75,8 +91,8 @@ class TestShopCart(unittest.TestCase):
         # but the data did change
         shopcarts = ShopCart.all()
         self.assertEqual(len(shopcarts), 1)
-        self.assertEqual(shopcarts[0].customer_id, 0)
-        self.assertEqual(shopcarts[0].product_id, 0)
+        self.assertEqual(shopcarts[0].customer_id, 1)
+        self.assertEqual(shopcarts[0].product_id, 1)
         self.assertEqual(shopcarts[0].price, 1)
         self.assertEqual(shopcarts[0].quantity, 1)
 
