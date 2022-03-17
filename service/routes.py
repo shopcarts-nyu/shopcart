@@ -58,7 +58,22 @@ def create_shopcarts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+######################################################################
+# RETRIEVE A SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:customer_id>", methods=["GET"])
+def get_shopcarts(customer_id):
+    """
+    Retrieve a single ShopCart
+    This endpoint will return a ShopCart based on it's id
+    """
+    app.logger.info("Request for shopcart with id: %s", customer_id)
+    shopcart = ShopCart.find(customer_id)
+    if not shopcart:
+        raise NotFound("ShopCart with id '{}' was not found.".format(customer_id))
 
+    app.logger.info("Returning shopcart: %s", shopcart.name)
+    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # UPDATE AN EXISTING SHOPCART

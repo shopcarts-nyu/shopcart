@@ -52,6 +52,20 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcart.price, 100)
         self.assertEqual(shopcart.quantity, 1)
 
+    def test_read_a_shopcart(self):
+        """Read a ShopCart"""
+        shopcart = ShopCartFactory()
+        logging.debug(shopcart)
+        shopcart.create()
+        self.assertEqual(shopcart.customer_id, 0)
+        # Fetch it back 
+        found_shopcart = ShopCart.find(shopcart.customer_id)
+        self.assertEqual(found_shopcart.customer_id, shopcart.customer_id)
+        self.assertEqual(found_shopcart.product_id, shopcart.product_id)
+        self.assertEqual(found_shopcart.name, shopcart.name)
+        self.assertEqual(found_shopcart.quantity, shopcart.quantity)
+        self.assertEqual(found_shopcart.price, shopcart.price)
+
     def test_update_a_shopcart(self):
         """Update a shopcart"""
         shopcart = ShopCartFactory()
