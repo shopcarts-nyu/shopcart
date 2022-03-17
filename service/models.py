@@ -33,14 +33,14 @@ class ShopCart(db.Model):
     price = db.Column(db.Float)
 
     def __repr__(self):
-        return "<ShopCart %r id=[%s]>" % (self.name, self.id)
+        return "<ShopCart %r customer_id=[%s] product_id=[%s]>" % (self.name, 
+            self.customer_id, self.product_id)
 
     def create(self):
         """
         Creates a ShopCart to the database
         """
         logger.info("Creating %s", self.name)
-        self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
 

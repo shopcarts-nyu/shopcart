@@ -43,10 +43,10 @@ class TestShopCart(unittest.TestCase):
 
     def test_create_a_shopcart(self):
         """Create a shopcart and assert that it exists"""
-        shopcart = ShopCart(name="MyCart1", price=100, quantity=1)
+        shopcart = ShopCart(name="MyCart1", customer_id=12, product_id=3, price=100, quantity=1)
         self.assertTrue(shopcart is not None)
-        self.assertEqual(shopcart.customer_id, None)
-        self.assertEqual(shopcart.product_id, None)
+        self.assertEqual(shopcart.customer_id, 12)
+        self.assertEqual(shopcart.product_id, 3)
         self.assertEqual(shopcart.name, "MyCart1")
         self.assertEqual(shopcart.price, 100)
         self.assertEqual(shopcart.quantity, 1)
