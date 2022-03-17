@@ -44,6 +44,15 @@ class ShopCart(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        """
+        Updates a ShopCart to the database
+        """
+        logger.info("Saving %s", self.name)
+        if self.customer_id is None or self.product_id is None:
+            raise DataValidationError("Update called with empty ID field")
+        db.session.commit()
+
     def save(self):
         """
         Updates a ShopCart to the database
