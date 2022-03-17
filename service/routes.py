@@ -58,6 +58,8 @@ def create_shopcarts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+
+
 ######################################################################
 # UPDATE AN EXISTING SHOPCART
 ######################################################################
