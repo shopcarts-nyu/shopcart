@@ -59,12 +59,14 @@ class TestShopCart(unittest.TestCase):
         shopcart.create()
         self.assertEqual(shopcart.customer_id, 0)
         # Fetch it back 
-        found_shopcart = ShopCart.find(shopcart.customer_id)
-        self.assertEqual(found_shopcart.customer_id, shopcart.customer_id)
-        self.assertEqual(found_shopcart.product_id, shopcart.product_id)
-        self.assertEqual(found_shopcart.name, shopcart.name)
-        self.assertEqual(found_shopcart.quantity, shopcart.quantity)
-        self.assertEqual(found_shopcart.price, shopcart.price)
+        found_shopcart = shopcart.find_by_customer_id(shopcart.customer_id)
+        items_in_found_shopcart = list(found_shopcart)
+        self.assertEqual(len(items_in_found_shopcart), 1)
+        self.assertEqual(items_in_found_shopcart[0].customer_id, shopcart.customer_id)
+        self.assertEqual(items_in_found_shopcart[0].product_id, shopcart.product_id)
+        self.assertEqual(items_in_found_shopcart[0].name, shopcart.name)
+        self.assertEqual(items_in_found_shopcart[0].quantity, shopcart.quantity)
+        self.assertEqual(items_in_found_shopcart[0].price, shopcart.price)
 
     def test_update_a_shopcart(self):
         """Update a shopcart"""
