@@ -37,6 +37,7 @@ class TestShopCart(unittest.TestCase):
         """This runs after each test"""
         db.session.remove()
         db.drop_all()
+        ShopCartFactory.reset_sequence()
 
     ######################################################################
     #  T E S T   C A S E S
@@ -74,8 +75,8 @@ class TestShopCart(unittest.TestCase):
         logging.debug(shopcart)
         shopcart.create()
         logging.debug(shopcart)
-        self.assertEqual(shopcart.customer_id, 1)
-        self.assertEqual(shopcart.product_id, 1)
+        self.assertEqual(shopcart.customer_id, 0)
+        self.assertEqual(shopcart.product_id, 0)
         logging.debug(shopcart.customer_id)
         # Change it an save it
         shopcart.price = 1
@@ -91,8 +92,17 @@ class TestShopCart(unittest.TestCase):
         # but the data did change
         shopcarts = ShopCart.all()
         self.assertEqual(len(shopcarts), 1)
-        self.assertEqual(shopcarts[0].customer_id, 1)
-        self.assertEqual(shopcarts[0].product_id, 1)
+        self.assertEqual(shopcarts[0].customer_id, 0)
+        self.assertEqual(shopcarts[0].product_id, 0)
         self.assertEqual(shopcarts[0].price, 1)
         self.assertEqual(shopcarts[0].quantity, 1)
 
+    def test_delete_a_shopcart(self):
+        """Delete a Shopcart"""
+        shopcart = ShopCartFactory()
+        logging.debug(shopcart)
+        shopcart.create()
+        self.assertEqual(len(shopcart.all()), 1)
+        # delete the shopcart and make sure it isn't in the database
+        shopcart.delete()
+        self.assertEqual(len(shopcart.all()), 0)
