@@ -96,3 +96,11 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcarts[0].price, 1)
         self.assertEqual(shopcarts[0].quantity, 1)
 
+    def test_delete_a_shopcart(self):
+        """Delete a Shopcart"""
+        shopcart = ShopCartFactory()
+        shopcart.create()
+        self.assertEqual(len(Shopcart.all()), 1)
+        # delete the pet and make sure it isn't in the database
+        shopcart.delete()
+        self.assertEqual(len(Shopcart.all()), 0)
