@@ -86,7 +86,7 @@ def get_shopcarts(customer_id):
     """
     app.logger.info("Request for shopcart with id: %s", customer_id)
     shopcart = ShopCart.find_by_customer_id(customer_id)
-    if not shopcart:
+    if shopcart.count() == 0:
         raise NotFound("ShopCart with id '{}' was not found.".format(customer_id))
 
     results = [product.serialize() for product in shopcart]
@@ -116,21 +116,22 @@ def update_shopcarts(customer_id, product_id):
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# DELETE A PET
+# DELETE A SHOPCART (INCLUDING ALL ITEMS IN IT)
 ######################################################################
-@app.route("/shopcarts/<int:shopcart_id>", methods=["DELETE"])
-def delete_shopcarts(shopcart_id):
+@app.route("/shopcarts/<int:customer_id>", methods=["DELETE"])
+def delete_shopcarts(customer_id):
     """
     Delete a Shopcart
     This endpoint will delete a Shopcart based the id specified in the path
     """
-    app.logger.info("Request to delete shopcart with id: %s", shopcart_id)
-    shopcart = Shopcart.find(shopcart_id)
-    if shopcart:
+    app.logger.info("Request to delete shopcart with id: %s", customer_id)
+    shopcarts = ShopCart.find_by_customer_id(customer_id)
+    for shopcart in shopcarts:
         shopcart.delete()
 
-    app.logger.info("Shopcart with ID [%s] delete complete.", shopcart_id)
+    app.logger.info("Shopcart with ID [%s] delete complete.", customer_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
+
 ######################################################################
 # LIST ALL SHOPCARTS
 ######################################################################
@@ -139,18 +140,12 @@ def list_shopcarts():
     """Returns all of the ShopCarts"""
     app.logger.info("Request for shopcart list")
     shopcarts = []
-    category = request.args.get("category")
-    name = request.args.get("name")
-    if category:
-        shopcarts = ShopCart.find_by_category(category)
-    elif name:
-        shopcarts = ShopCart.find_by_name(name)
-    else:
-        shopcarts = ShopCart.all()
+    shopcarts = ShopCart.all()
 
     results = [shopcart.serialize() for shopcart in shopcarts]
     app.logger.info("Returning %d shopcarts", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK) 
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
