@@ -4,6 +4,7 @@ Test cases for ShopCart Model
 import logging
 import unittest
 import os
+from werkzeug.exceptions import NotFound
 from service.models import ShopCart, DataValidationError, db
 from service import app
 from config import DATABASE_URI
@@ -113,8 +114,93 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcarts, [])
         # Create 5 ShopCarts
         for i in range(5):
-            pet = ShopCartFactory()
-            pet.create()
+            shopcart = ShopCartFactory()
+            shopcart.create()
         # See if we get back 5 shopcarts
         shopcarts = ShopCart.all()
         self.assertEqual(len(shopcarts), 5)
+
+    def test_serialize_a_shopcart(self):
+        """Test serialization of a ShopCart"""
+        shopcart = ShopCartFactory()
+        data = shopcart.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn("customer_id", data)
+        self.assertEqual(data["customer_id"], shopcart.customer_id)
+        self.assertIn("product_id", data)
+        self.assertEqual(data["product_id"], shopcart.product_id)
+        self.assertIn("price", data)
+        self.assertEqual(data["price"], shopcart.price)
+        self.assertIn("quantity", data)
+        self.assertEqual(data["quantity"], shopcart.quantity)
+
+    def test_deserialize_a_shopcart(self):
+        """Test deserialization of a ShopCart"""
+        data = {
+            "customer_id": 1,
+            "product_id": 2,
+            "name": "cart1",
+            "price": 20.0,
+            "quantity": 5,
+        }
+        shopcart = ShopCart()
+        shopcart.deserialize(data)
+        self.assertNotEqual(shopcart, None)
+        self.assertEqual(shopcart.customer_id, 1)
+        self.assertEqual(shopcart.product_id, 2)
+        self.assertEqual(shopcart.name, "cart1")
+        self.assertEqual(shopcart.price, 20.0)
+        self.assertEqual(shopcart.quantity, 5)
+
+    def test_deserialize_missing_data(self):
+        """Test deserialization of a ShopCart with missing data"""
+        data = {"customer_id": 1, "name": "test_cart", "price": 2}
+        shopcart = ShopCart()
+        self.assertRaises(DataValidationError, shopcart.deserialize, data)
+
+    def test_deserialize_bad_data(self):
+        """Test deserialization of bad data"""
+        data = "this is not a dictionary"
+        shopcart = ShopCart()
+        self.assertRaises(DataValidationError, shopcart.deserialize, data)
+
+    def test_find_shopcart(self):
+        """Find a ShopCart by ID"""
+        shopcarts = ShopCartFactory.create_batch(3)
+        for shopcart in shopcarts:
+            shopcart.create()
+        logging.debug(shopcarts)
+        # make sure they got saved
+        self.assertEqual(len(ShopCart.all()), 3)
+        # find the 2nd shopcart in the list
+        shopcart = ShopCart.find((shopcarts[1].customer_id, shopcarts[1].product_id))
+        self.assertIsNot(shopcart, None)
+        self.assertEqual(shopcart.customer_id, shopcarts[1].customer_id)
+        self.assertEqual(shopcart.product_id, shopcarts[1].product_id)
+        self.assertEqual(shopcart.name, shopcarts[1].name)
+        self.assertEqual(shopcart.price, shopcarts[1].price)
+
+    def test_find_by_customer_id(self):
+        """Find a ShopCart by customer id"""
+        ShopCart(name="MyCart1", customer_id=12, product_id=3, price=100, quantity=1).create()
+        ShopCart(name="MyCart2", customer_id=3, product_id=5, price=50, quantity=2).create()
+
+        shopcarts = ShopCart.find_by_customer_id(3)
+        self.assertEqual(shopcarts[0].price, 50)
+        self.assertEqual(shopcarts[0].quantity, 2)
+
+    def test_find_or_404_found(self):
+        """Find or return 404 found"""
+        shopcarts = ShopCartFactory.create_batch(3)
+        for shopcart in shopcarts:
+            shopcart.create()
+
+        shopcart = ShopCart.find_or_404((shopcarts[1].product_id, shopcarts[1].product_id))
+        self.assertIsNot(shopcart, None)
+        self.assertEqual(shopcart.customer_id, shopcarts[1].customer_id)
+        self.assertEqual(shopcart.name, shopcarts[1].name)
+        self.assertEqual(shopcart.price, shopcarts[1].price)
+
+    def test_find_or_404_not_found(self):
+        """Find or return 404 NOT found"""
+        self.assertRaises(NotFound, ShopCart.find_or_404, (0, 0))
