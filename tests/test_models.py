@@ -106,3 +106,15 @@ class TestShopCart(unittest.TestCase):
         # delete the shopcart and make sure it isn't in the database
         shopcart.delete()
         self.assertEqual(len(shopcart.all()), 0)
+    
+    def test_list_all_shopcarts(self):
+        """List ShopCarts in the database"""
+        shopcarts = ShopCart.all()
+        self.assertEqual(shopcarts, [])
+        # Create 5 ShopCarts
+        for i in range(5):
+            pet = ShopCartFactory()
+            pet.create()
+        # See if we get back 5 shopcarts
+        shopcarts = ShopCart.all()
+        self.assertEqual(len(shopcarts), 5)
