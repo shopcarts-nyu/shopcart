@@ -35,22 +35,22 @@ def index():
         status.HTTP_200_OK,
     )
 
-######################################################################
-# RETRIEVE A SHOPCART WITH ALL ITEMS IN IT
-######################################################################
-@app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["GET"])
-def get_shopcarts(customer_id, product_id):
-    """
-    Retrieve a single Shopcart
-    This endpoint will return a Shopcart based on it's id
-    """
-    app.logger.info("Request for shopcart with id: %s and product with id: %s", customer_id, product_id)
-    shopcart = ShopCart.find((customer_id, product_id))
-    if not shopcart:
-        raise NotFound("Shopcart with id '{}' for product '{}' was not found.".format(customer_id, product_id))
+# ######################################################################
+# # RETRIEVE A SHOPCART WITH ALL ITEMS IN IT
+# ######################################################################
+# @app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["GET"])
+# def get_shopcarts(customer_id, product_id):
+#     """
+#     Retrieve a single Shopcart
+#     This endpoint will return a Shopcart based on it's id
+#     """
+#     app.logger.info("Request for shopcart with id: %s and product with id: %s", customer_id, product_id)
+#     shopcart = ShopCart.find((customer_id, product_id))
+#     if not shopcart:
+#         raise NotFound("Shopcart with id '{}' for product '{}' was not found.".format(customer_id, product_id))
 
-    app.logger.info("Returning shopcart: %s", shopcart.name)
-    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
+#     app.logger.info("Returning shopcart: %s", shopcart.name)
+#     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # ADD A NEW SHOPCART
@@ -85,12 +85,13 @@ def get_shopcarts(customer_id):
     This endpoint will return a ShopCart based on it's id
     """
     app.logger.info("Request for shopcart with id: %s", customer_id)
-    shopcart = ShopCart.find(customer_id)
+    shopcart = ShopCart.find_by_customer_id(customer_id)
     if not shopcart:
         raise NotFound("ShopCart with id '{}' was not found.".format(customer_id))
 
-    app.logger.info("Returning shopcart: %s", shopcart.name)
-    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
+    results = [product.serialize() for product in shopcart]
+    app.logger.info("Returning %d shopcarts", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK) 
 
 ######################################################################
 # UPDATE AN EXISTING SHOPCART

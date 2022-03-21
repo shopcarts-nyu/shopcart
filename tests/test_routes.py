@@ -78,7 +78,7 @@ class TestShopCart(TestCase):
         # Check that the location header was correct
         resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        new_shopcart = resp.get_json()
+        new_shopcart = resp.get_json()[0]
         self.assertEqual(new_shopcart["name"], test_shopcart.name, "Names do not match")
         self.assertEqual(
             new_shopcart["price"], test_shopcart.price, "Categories do not match"
