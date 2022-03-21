@@ -16,7 +16,6 @@
 Test Factory to make fake objects for testing
 """
 import factory
-from factory.fuzzy import FuzzyChoice
 from service.models import ShopCart
 
 
@@ -32,5 +31,5 @@ class ShopCartFactory(factory.Factory):
     product_id = factory.Sequence(lambda n: n)
     name = factory.Faker("name")
     quantity = factory.Faker('pyint', min_value=0, max_value=1000000000)
-    price = factory.Faker('pyint', min_value=0, max_value=10000)
+    price = factory.Faker('pyfloat', min_value=0, max_value=10000)
 

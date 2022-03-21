@@ -76,6 +76,23 @@ def create_shopcarts():
     )
 
 ######################################################################
+# RETRIEVE A SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:customer_id>", methods=["GET"])
+def get_shopcarts(customer_id):
+    """
+    Retrieve a single ShopCart
+    This endpoint will return a ShopCart based on it's id
+    """
+    app.logger.info("Request for shopcart with id: %s", customer_id)
+    shopcart = ShopCart.find(customer_id)
+    if not shopcart:
+        raise NotFound("ShopCart with id '{}' was not found.".format(customer_id))
+
+    app.logger.info("Returning shopcart: %s", shopcart.name)
+    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
+
+######################################################################
 # UPDATE AN EXISTING SHOPCART
 ######################################################################
 @app.route("/shopcarts/<int:customer_id>/<int:product_id>", methods=["PUT"])
@@ -97,6 +114,42 @@ def update_shopcarts(customer_id, product_id):
     app.logger.info("shopcart with ID [%s] for product [%s] updated.", shopcart.customer_id, shopcart.product_id)
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
+######################################################################
+# DELETE A PET
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>", methods=["DELETE"])
+def delete_shopcarts(shopcart_id):
+    """
+    Delete a Shopcart
+    This endpoint will delete a Shopcart based the id specified in the path
+    """
+    app.logger.info("Request to delete shopcart with id: %s", shopcart_id)
+    shopcart = Shopcart.find(shopcart_id)
+    if shopcart:
+        shopcart.delete()
+
+    app.logger.info("Shopcart with ID [%s] delete complete.", shopcart_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
+######################################################################
+# LIST ALL SHOPCARTS
+######################################################################
+@app.route("/shopcarts", methods=["GET"])
+def list_shopcarts():
+    """Returns all of the ShopCarts"""
+    app.logger.info("Request for shopcart list")
+    shopcarts = []
+    category = request.args.get("category")
+    name = request.args.get("name")
+    if category:
+        shopcarts = ShopCart.find_by_category(category)
+    elif name:
+        shopcarts = ShopCart.find_by_name(name)
+    else:
+        shopcarts = ShopCart.all()
+
+    results = [shopcart.serialize() for shopcart in shopcarts]
+    app.logger.info("Returning %d shopcarts", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK) 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################

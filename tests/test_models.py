@@ -37,6 +37,7 @@ class TestShopCart(unittest.TestCase):
         """This runs after each test"""
         db.session.remove()
         db.drop_all()
+        ShopCartFactory.reset_sequence()
 
     ######################################################################
     #  T E S T   C A S E S
@@ -51,6 +52,22 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcart.name, "MyCart1")
         self.assertEqual(shopcart.price, 100)
         self.assertEqual(shopcart.quantity, 1)
+
+    def test_read_a_shopcart(self):
+        """Read a ShopCart"""
+        shopcart = ShopCartFactory()
+        logging.debug(shopcart)
+        shopcart.create()
+        self.assertEqual(shopcart.customer_id, 0)
+        # Fetch it back 
+        found_shopcart = shopcart.find_by_customer_id(shopcart.customer_id)
+        items_in_found_shopcart = list(found_shopcart)
+        self.assertEqual(len(items_in_found_shopcart), 1)
+        self.assertEqual(items_in_found_shopcart[0].customer_id, shopcart.customer_id)
+        self.assertEqual(items_in_found_shopcart[0].product_id, shopcart.product_id)
+        self.assertEqual(items_in_found_shopcart[0].name, shopcart.name)
+        self.assertEqual(items_in_found_shopcart[0].quantity, shopcart.quantity)
+        self.assertEqual(items_in_found_shopcart[0].price, shopcart.price)
 
     def test_update_a_shopcart(self):
         """Update a shopcart"""
@@ -80,3 +97,24 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcarts[0].price, 1)
         self.assertEqual(shopcarts[0].quantity, 1)
 
+    def test_delete_a_shopcart(self):
+        """Delete a Shopcart"""
+        shopcart = ShopCartFactory()
+        logging.debug(shopcart)
+        shopcart.create()
+        self.assertEqual(len(shopcart.all()), 1)
+        # delete the shopcart and make sure it isn't in the database
+        shopcart.delete()
+        self.assertEqual(len(shopcart.all()), 0)
+    
+    def test_list_all_shopcarts(self):
+        """List ShopCarts in the database"""
+        shopcarts = ShopCart.all()
+        self.assertEqual(shopcarts, [])
+        # Create 5 ShopCarts
+        for i in range(5):
+            pet = ShopCartFactory()
+            pet.create()
+        # See if we get back 5 shopcarts
+        shopcarts = ShopCart.all()
+        self.assertEqual(len(shopcarts), 5)
