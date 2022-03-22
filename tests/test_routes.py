@@ -52,7 +52,8 @@ class TestShopCart(TestCase):
         for _ in range(count):
             test_shopcart = ShopCartFactory()
             resp = self.app.post(
-                BASE_URL, json=test_shopcart.serialize(), content_type=CONTENT_TYPE_JSON
+                f'{BASE_URL}/{test_shopcart.customer_id}/items', 
+                json=test_shopcart.serialize(), content_type=CONTENT_TYPE_JSON
             )
             self.assertEqual(
                 resp.status_code, status.HTTP_201_CREATED, "Could not create test shopcart"
@@ -72,8 +73,8 @@ class TestShopCart(TestCase):
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    def test_create_shopcart(self):
-        """Create a new shopcart"""
+    def test_create_empty_shopcart(self):
+        """Create an empty shopcart"""
         test_shopcart = ShopCartFactory()
         logging.debug(test_shopcart)
         resp = self.app.post(
@@ -85,31 +86,90 @@ class TestShopCart(TestCase):
         self.assertIsNotNone(location)
         # Check the data is correct
         new_shopcart = resp.get_json()
+        self.assertEqual(new_shopcart["customer_id"], test_shopcart.customer_id, 
+                        "Customer id do not match")
+        # Check that the location header was correct
+        resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_create_shopcart_with_item(self):
+        """Create a ShopCart with item in it"""
+        # get the id of a shopcart
+        shopcart = self._create_shopcarts(1)[0]
+        test_shopcart = ShopCartFactory()
+        test_shopcart.customer_id = shopcart.customer_id
+        logging.debug(test_shopcart)
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(test_shopcart.customer_id), 
+            json=test_shopcart.serialize(),
+            content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+        # Check the data is correct
+        new_shopcart = resp.get_json()
         self.assertEqual(new_shopcart["name"], test_shopcart.name, "Names do not match")
         self.assertEqual(
-            new_shopcart["price"], test_shopcart.price, "Categories do not match"
+            new_shopcart["price"], test_shopcart.price, "Prices do not match"
         )
         self.assertEqual(
-            new_shopcart["quantity"], test_shopcart.quantity, "Availability does not match"
+            new_shopcart["quantity"], test_shopcart.quantity, "Quantities does not match"
         )
         # Check that the location header was correct
         resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        new_shopcart = resp.get_json()[0]
+        new_shopcart = resp.get_json()
         self.assertEqual(new_shopcart["name"], test_shopcart.name, "Names do not match")
         self.assertEqual(
-            new_shopcart["price"], test_shopcart.price, "Categories do not match"
+            new_shopcart["price"], test_shopcart.price, "Prices do not match"
         )
         self.assertEqual(
-            new_shopcart["quantity"], test_shopcart.quantity, "Availability does not match"
+            new_shopcart["quantity"], test_shopcart.quantity, "Quantities does not match"
         )
+
+    def test_get_shopcart(self):
+        """Get a single ShopCart"""
+        # get the id of a shopcart
+        test_shopcart = self._create_shopcarts(1)[0]
+        resp = self.app.get(
+            "/shopcarts/{}".format(test_shopcart.customer_id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data[0]["name"], test_shopcart.name)
+    
+    def test_get_shopcart_alt_route(self):
+        """Get a single ShopCart"""
+        # get the id of a shopcart
+        test_shopcart = self._create_shopcarts(1)[0]
+        resp = self.app.get(
+            "/shopcarts/{}/items".format(test_shopcart.customer_id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data[0]["name"], test_shopcart.name)
+    
+    def test_get_shopcart_item(self):
+        """Get a single ShopCart"""
+        # get the id of a shopcart
+        test_shopcart = self._create_shopcarts(1)[0]
+        resp = self.app.get(
+            "/shopcarts/{}/items/{}".format(test_shopcart.customer_id, 
+                test_shopcart.product_id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], test_shopcart.name)
 
     def test_update_shopcart(self):
         """Update an existing ShopCart"""
         # create a shopcart to update
         test_shopcart = ShopCartFactory()
         resp = self.app.post(
-            BASE_URL, json=test_shopcart.serialize(), content_type=CONTENT_TYPE_JSON
+            f'{BASE_URL}/{test_shopcart.customer_id}/items', 
+            json=test_shopcart.serialize(), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
@@ -118,7 +178,7 @@ class TestShopCart(TestCase):
         logging.debug(new_shopcart)
         new_shopcart["price"] = -1
         resp = self.app.put(
-            "/shopcarts/{}/{}".format(new_shopcart["customer_id"], new_shopcart["product_id"]),
+            "/shopcarts/{}/items/{}".format(new_shopcart["customer_id"], new_shopcart["product_id"]),
             json=new_shopcart,
             content_type=CONTENT_TYPE_JSON,
         )
