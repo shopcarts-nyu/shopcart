@@ -42,7 +42,7 @@ def index():
 # ADD A NEW SHOPCART
 ######################################################################
 @app.route("/shopcarts", methods=["POST"])
-def create_shopcarts():
+def create_empty_shopcarts():
     """
     Creates a ShopCart
     This endpoint will create a ShopCart based the data in the body that is posted
@@ -51,21 +51,20 @@ def create_shopcarts():
     check_content_type("application/json")
     shopcart = ShopCart()
     shopcart.deserialize(request.get_json())
-    shopcart.create()
-    message = shopcart.serialize()
-    location_url = url_for("get_shopcarts", customer_id=shopcart.customer_id, 
-                                            product_id=shopcart.product_id, _external=True)
+    # shopcart.create()
+    message = {"customer_id": shopcart.customer_id}
+    location_url = url_for("get_shopcarts", customer_id=shopcart.customer_id, _external=True)
 
-    app.logger.info("Shopcart for customer [%s] for product [%s] created.", shopcart.customer_id, shopcart.product_id)
+    app.logger.info("Shopcart for customer [%s] created.", shopcart.customer_id)
     return make_response(
-        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+        message, status.HTTP_201_CREATED, {"Location": location_url}
     )
 
 ######################################################################
 # ADD A NEW ITEM TO SHOPCART
 ######################################################################
 @app.route("/shopcarts/<int:customer_id>/items", methods=["POST"])
-def create_shopcart_by_id(customer_id):
+def create_shopcarts_with_item(customer_id):
     """
     Add an item to an existing ShopCart 
     This endpoint will create a ShopCart based the data in the body that is posted
@@ -78,7 +77,7 @@ def create_shopcart_by_id(customer_id):
         abort(status.HTTP_400_BAD_REQUEST, "Customer ID in data must be {} as requested in URI. ".format(customer_id)) 
     shopcart.create()
     message = shopcart.serialize()
-    location_url = url_for("get_shopcarts", customer_id=shopcart.customer_id, 
+    location_url = url_for("get_shopcarts_with_item_id", customer_id=shopcart.customer_id, 
                                             product_id=shopcart.product_id, _external=True)
 
     app.logger.info("Shopcart for customer [%s] for product [%s] created.", shopcart.customer_id, shopcart.product_id)
@@ -109,7 +108,7 @@ def get_shopcarts(customer_id):
 # RETRIEVE A SHOPCART
 ######################################################################
 @app.route("/shopcarts/<int:customer_id>/items/<int:product_id>", methods=["GET"])
-def get_item_in_shopcart(customer_id, product_id):
+def get_shopcarts_with_item_id(customer_id, product_id):
     """
     Retrieve a single ShopCart
     This endpoint will return a ShopCart based on it's id
