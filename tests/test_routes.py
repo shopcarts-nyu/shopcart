@@ -231,3 +231,33 @@ class TestShopCart(TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_query_shopcart_list_by_price(self):
+        """Query Shopcarts by price"""
+        shopcarts = self._create_shopcarts(10)
+        test_price = shopcarts[0].price
+        price_shopcarts = [shopcart for shopcart in shopcarts if shopcart.price == test_price]
+        resp = self.app.get(
+            BASE_URL, query_string="price={}".format(test_price)
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(price_shopcarts))
+        # check the data just to be sure
+        for shopcart in data:
+            self.assertEqual(shopcart["price"], test_price)
+
+    def test_query_shopcart_list_by_quantity(self):
+        """Query Shopcarts by quantity"""
+        shopcarts = self._create_shopcarts(10)
+        test_quantity = shopcarts[0].quantity
+        quantity_shopcarts = [shopcart for shopcart in shopcarts if shopcart.quantity == test_quantity]
+        resp = self.app.get(
+            BASE_URL, query_string="quantity={}".format(test_quantity)
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(quantity_shopcarts))
+        # check the data just to be sure
+        for shopcart in data:
+            self.assertEqual(shopcart["quantity"], test_quantity)
