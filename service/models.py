@@ -136,3 +136,25 @@ class ShopCart(db.Model):
         """
         logger.info("Processing name query for %s ...", customer_id)
         return cls.query.filter(cls.customer_id == customer_id)
+    
+    @classmethod
+    def find_by_price(cls, price: str) -> list:
+        """Returns all Shopcarts with the given price
+
+        :type name: float
+        :return: a collection of Shopcarts equal to that price
+        :rtype: list
+        """
+        logger.info("Processing price query for %s ...", price)
+        return cls.query.filter(cls.price == price)
+    
+    @classmethod
+    def find_by_quantity(cls, quantity: str) -> list:
+        """Returns all Shopcarts with the given quantity
+
+        :type name: float
+        :return: a collection of Shopcarts equal to that quantity
+        :rtype: list
+        """
+        logger.info("Processing quantity query for %s ...", quantity)
+        return cls.query.filter(cls.quantity == quantity)
