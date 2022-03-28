@@ -168,12 +168,12 @@ def list_shopcarts():
     """Returns all of the ShopCarts"""
     app.logger.info("Request for shopcart list")
     shopcarts = []
-    price=request.args.get("price")
-    quantity=request.args.get("quantity")
+    price = request.args.get("price")
+    quantity = request.args.get("quantity")
     if price:
         shopcarts = ShopCart.find_by_price(price)
     elif quantity:
-        shopcarts=ShopCart.find_by_quantity(quantity)
+        shopcarts = ShopCart.find_by_quantity(quantity)
     else:
         shopcarts = ShopCart.all()
 

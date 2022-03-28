@@ -13,7 +13,6 @@ from service.models import db
 from service.routes import app, init_db
 from .factories import ShopCartFactory
 from config import DATABASE_URI
-from urllib.parse import quote_plus
 
 BASE_URL = "/shopcarts"
 CONTENT_TYPE_JSON = "application/json"
