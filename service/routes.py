@@ -160,6 +160,25 @@ def delete_shopcarts(customer_id):
     app.logger.info("Shopcart with ID [%s] delete complete.", customer_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
 
+
+######################################################################
+# DELETE A SHOPCART (A SPECIFIC ITEM)
+######################################################################
+@app.route("/shopcarts/<int:customer_id>/items/<int:product_id>", methods=["DELETE"])
+def delete_item_shopcarts(customer_id,product_id):
+    """
+    Delete a Shopcart
+    This endpoint will delete a specific product item in Shopcart based the id specified in the path
+    """
+    app.logger.info("Request to delete product with id [%s] for shopcart [%s]", customer_id, product_id)
+    shopcart = ShopCart.find((customer_id, product_id))
+    if not shopcart:
+        raise NotFound("Shopcart with id '{}' for product '{}' was not found.".format((customer_id, product_id)))
+    shopcart.delete()
+
+    app.logger.info("shopcart with ID [%s] for product [%s] deleted.", shopcart.customer_id, shopcart.product_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
 ######################################################################
 # LIST ALL SHOPCARTS
 ######################################################################
