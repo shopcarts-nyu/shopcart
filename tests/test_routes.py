@@ -200,6 +200,20 @@ class TestShopCart(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_delete_product_item(self):
+        """Delete a product from a ShopCart"""
+        test_shopcart = self._create_shopcarts(1)[0]
+        resp = self.app.delete(
+            "{0}/{1}/items/{2}".format(BASE_URL, test_shopcart.customer_id, test_shopcart.product_id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get(
+            "{0}/{1}/items/{2}".format(BASE_URL, test_shopcart.customer_id, test_shopcart.product_id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_get_shopcart_list(self):
         """Get a list of ShopCarts"""
         self._create_shopcarts(5)
