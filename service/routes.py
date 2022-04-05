@@ -182,7 +182,7 @@ def delete_item_shopcarts(customer_id,product_id):
 ######################################################################
 # LIST ALL SHOPCARTS
 ######################################################################
-@app.route("/shopcarts", methods=["GET"])
+@app.route("/shopcarts/<int:customer_id>/items/<int:product_id>", methods=["GET"])
 def list_shopcarts():
     """Returns all of the ShopCarts"""
     app.logger.info("Request for shopcart list")
@@ -199,6 +199,30 @@ def list_shopcarts():
     results = [shopcart.serialize() for shopcart in shopcarts]
     app.logger.info("Returning %d shopcarts", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK) 
+
+######################################################################
+# LIST ALL PRODUCTS IN A SHOPCART
+######################################################################
+@app.route("/shopcarts", methods=["GET"])
+def list_products():
+    """Returns all of the products in ShopCarts"""
+    app.logger.info("Request for product list")
+    shopcarts = []
+    price = request.args.get("price")
+    quantity = request.args.get("quantity")
+    product_id = request.args.get("product_id")
+    if price:
+        shopcarts = ShopCart.find_by_price(price)
+    elif quantity:
+        shopcarts = ShopCart.find_by_quantity(quantity)
+    elif product_id:
+        shopcarts = ShopCart.find_by_product_id(product_id)    
+    else:
+        shopcarts = ShopCart.all()
+
+    results = [shopcart.serialize() for shopcart in shopcarts]
+    app.logger.info("Returning %d shopcarts", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
