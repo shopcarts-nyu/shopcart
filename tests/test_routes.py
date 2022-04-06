@@ -303,3 +303,18 @@ class TestShopCart(TestCase):
         # check the data just to be sure
         for shopcart in data:
             self.assertEqual(shopcart["quantity"], test_quantity)
+
+    def test_query_shopcart_list_by_product_id(self):
+        """Query Shopcarts by product_id"""
+        shopcarts = self._create_shopcarts(10)
+        test_product_id = shopcarts[0].product_id
+        product_id_shopcarts = [shopcart for shopcart in shopcarts if shopcart.product_id == test_product_id]
+        resp = self.app.get(
+            BASE_URL, query_string="product_id={}".format(test_product_id)
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(product_id_shopcarts))
+        # check the data just to be sure
+        for shopcart in data:
+            self.assertEqual(shopcart["product_id"], test_product_id)

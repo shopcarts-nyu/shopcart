@@ -207,6 +207,14 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcarts[0].product_id, 5)
         self.assertEqual(shopcarts[0].price, 50)
 
+    def test_find_by_product_id(self):
+        """Find a ShopCarts by product_id"""
+        ShopCart(name="MyCart1", customer_id=12, product_id=3, price=100, quantity=1).create()
+        ShopCart(name="MyCart2", customer_id=3, product_id=5, price=50, quantity=2).create()
+        shopcarts = ShopCart.find_by_product_id(5)
+        self.assertEqual(shopcarts[0].customer_id, 3)
+        self.assertEqual(shopcarts[0].quantity, 2)
+        self.assertEqual(shopcarts[0].price, 50)
 
     def test_find_or_404_found(self):
         """Find or return 404 found"""

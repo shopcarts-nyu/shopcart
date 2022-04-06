@@ -158,3 +158,14 @@ class ShopCart(db.Model):
         """
         logger.info("Processing quantity query for %s ...", quantity)
         return cls.query.filter(cls.quantity == quantity)
+
+    @classmethod
+    def find_by_product_id(cls, product_id: str) -> list:
+        """Returns all Shopcarts with the given product_id
+
+        :type name: float
+        :return: a collection of Shopcarts equal to that product_id
+        :rtype: list
+        """
+        logger.info("Processing product_id query for %s ...", product_id)
+        return cls.query.filter(cls.product_id == product_id)
