@@ -9,6 +9,8 @@ GET /shopcarts/{customer_id} - Returns the ShopCart with a given id number
 GET /shopcarts/{customer_id}/items - Returns the ShopCart with a given id number
 GET /shopcarts/{customer_id}/items/{product_id} - Returns an item in the ShopCart with a given id number
 PUT /shopcarts/{customer_id}/items/{product_id} - updates a ShopCart record in the database
+PUT /shopcarts/{customer_id}/checkout - checkout all items in the shopcart
+PUT /shopcarts/{customer_id}/items/{product_id}/checkout - checkout one item in the shopcart
 DELETE /shopcarts/{customer_id} - deletes a ShopCart record in the database
 """
 
@@ -180,7 +182,47 @@ def delete_item_shopcarts(customer_id,product_id):
     return make_response("", status.HTTP_204_NO_CONTENT)
 
 ######################################################################
-# LIST ALL SHOPCARTS AND PRODUCTS IN A SHOPCART
+# CHECKOUT A SHOPCART (INCLUDING ALL ITEMS IN IT)
+######################################################################
+@app.route("/shopcarts/<int:customer_id>/checkout", methods=["PUT"])
+def checkout_shopcarts(customer_id):
+    """
+    Checkout a Shopcart
+    This endpoint will checkout a Shopcart based the id specified in the path. 
+    The shopcart will be emptied as a result.
+    """
+    app.logger.info("Request to checkout shopcart with id: %s", customer_id)
+
+    # Placeholder to call the orders api
+    shopcarts = ShopCart.find_by_customer_id(customer_id)
+    for shopcart in shopcarts:
+        shopcart.delete()
+
+    app.logger.info("Shopcart with ID [%s] checkout complete.", customer_id)
+    return make_response("", status.HTTP_200_OK)
+
+
+######################################################################
+# CHECKOUT A SHOPCART (A SPECIFIC ITEM)
+######################################################################
+@app.route("/shopcarts/<int:customer_id>/items/<int:product_id>/checkout", methods=["PUT"])
+def checkout_item_shopcarts(customer_id,product_id):
+    """
+    Checkout an item in a Shopcart
+    This endpoint will checkout a specific product item in Shopcart based the id specified in the path
+    """
+    app.logger.info("Request to checkout product with id [%s] for shopcart [%s]", customer_id, product_id)
+    shopcart = ShopCart.find((customer_id, product_id))
+    if not shopcart:
+        raise NotFound("Shopcart with id '{}' for product '{}' was not found.".format((customer_id, product_id)))
+    # Placeholder to call the orders api
+    shopcart.delete()
+
+    app.logger.info("shopcart with ID [%s] for product [%s] checked out.", shopcart.customer_id, shopcart.product_id)
+    return make_response("", status.HTTP_200_OK)
+
+######################################################################
+# LIST ALL SHOPCARTS AND QUERY PRICE, QUANTITY, PRODUCTID
 ######################################################################
 @app.route("/shopcarts", methods=["GET"])
 @app.route("/shopcarts/<int:customer_id>/items/<int:product_id>", methods=["GET"])
