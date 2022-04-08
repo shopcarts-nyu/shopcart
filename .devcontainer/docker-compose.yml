@@ -12,6 +12,7 @@ services:
     #   - 8000:8000
     volumes:
       - ..:/app
+      - ~/.shopcarts/:/home/devops/.shopcarts/
     command: sleep infinity
     environment:
       FLASK_APP: service:app
