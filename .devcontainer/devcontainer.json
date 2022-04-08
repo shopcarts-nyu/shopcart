@@ -24,5 +24,6 @@
 		"bbenoist.vagrant"
 	],
 	//"forwardPorts": [8000],
-	//"postCreateCommand": "sudo pip install -U pip wheel && sudo pip install -r requirements.txt"
+	// "postCreateCommand": "sudo pip install -U pip wheel && sudo pip install -r requirements.txt"
+	"postCreateCommand": "bash scripts/linux-tools.sh"
 }
