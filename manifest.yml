@@ -2,12 +2,12 @@
 ---
 # This manifest deploys a Python Flask application with a Cloudant database
 applications:
-- name: nyu-shopcart-service-sp2021
+- name: nyu-shopcart-service-sp2201
   path: .
   instances: 2
-  memory: 64M
+  memory: 128M
   routes:
-  - route: nyu-shopcart-service-sp2021.us-south.cf.appdomain.cloud
+  - route: nyu-shopcart-service-sp2201.us-south.cf.appdomain.cloud
   disk_quota: 1024M
   buildpacks: 
   - python_buildpack
