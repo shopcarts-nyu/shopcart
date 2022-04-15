@@ -2,7 +2,7 @@
 Werkzeug==2.0.3
 Flask==2.0.2
 Flask-SQLAlchemy==2.5.1
-psycopg2==2.9.3
+psycopg2-binary==2.9.3
 python-dotenv==0.19.2
 
 # Runtime
@@ -21,8 +21,8 @@ httpie==2.3.0
 
 # Behavior Driven Development
 behave==1.2.6
-# selenium==3.141.0
 selenium==4.1.0
+compare==0.2b0
 
 # Code coverage
 coverage==4.5.4
