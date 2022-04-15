@@ -34,11 +34,8 @@ from . import app
 ######################################################################
 @app.route("/")
 def index():
-    """ Root URL response """
-    return (
-        {"message": "Welcome to ShopCarts!"},
-        status.HTTP_200_OK,
-    )
+    """Base URL for our service"""
+    return app.send_static_file("index.html")
 
 ######################################################################
 # ADD A NEW SHOPCART
