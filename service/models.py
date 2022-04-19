@@ -84,11 +84,11 @@ class ShopCart(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
-            self.customer_id = data["customer_id"]
-            self.product_id = data["product_id"]
+            self.customer_id = int(data["customer_id"])
+            self.product_id = int(data["product_id"])
             self.name = data["name"]
-            self.quantity = data["quantity"]
-            self.price = data["price"]
+            self.quantity = int(data["quantity"])
+            self.price = float(data["price"])
         except KeyError as error:
             raise DataValidationError(
                 "Invalid ShopCart: missing " + error.args[0]

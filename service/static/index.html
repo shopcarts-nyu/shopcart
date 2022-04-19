@@ -13,12 +13,12 @@
           <h1>ShopCart Demo REST API Service</h1>
       </div>
 
-      <!-- Flash Message
+      <!-- Flash Message -->
       <div class="table-responsive">
         <table class="table">
           <tr><td>Status:</td><td><span id="flash_message"></span></td></tr>
         </table>
-      </div> -->
+      </div>
 
       <!-- FORM -->
       <div class="col-md-12" id="form_data">
@@ -26,9 +26,9 @@
         <div class="well">
           <div class="form-horizontal">
             <div class="form-group">
-              <label class="control-label col-sm-2" for="shopcart_id">Customer ID:</label>
+              <label class="control-label col-sm-2" for="customer_id">Customer ID:</label>
               <div class="col-sm-2">
-                <input type="text" class="form-control" id="shopcart_id" placeholder="Enter Customer ID">
+                <input type="text" class="form-control" id="customer_id" placeholder="Enter Customer ID">
               </div>
               <label class="control-label col-sm-2" for="product_id">Product ID:</label>
               <div class="col-sm-2">
@@ -70,11 +70,11 @@
             <!-- SUBMIT BUTTONS -->
             <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-success" id="create-btn">Create</button>
                 <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
                 <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
-                <button type="submit" class="btn btn-success" id="create-btn">Create</button>
                 <button type="submit" class="btn btn-warning" id="update-btn">Update</button>
-                <button type="submit" class="btn btn-success" id="create-btn">Checkout</button>
+                <button type="submit" class="btn btn-success" id="checkout-btn">Checkout</button>
               </div>
             </div>
           </div> <!-- form horizontal -->
