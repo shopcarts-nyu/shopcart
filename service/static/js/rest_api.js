@@ -6,25 +6,20 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res._id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
-        } else {
-            $("#pet_available").val("false");
-        }
-        $("#pet_gender").val(res.gender);
-        $("#pet_birthday").val(res.birthday);
+        $("#customer_id").val(res.customer_id);
+        $("#product_id").val(res.product_id);
+        $("#shopcart_name").val(res.name);
+        $("#shopcart_quantity").val(res.quantity);
+        $("#shopcart_price").val(res.quantity);
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
-        $("#pet_gender").val("");
-        $("#pet_birthday").val("");
+        $("#customer_id").val("");
+        $("#product_id").val("");
+        $("#shopcart_name").val("");
+        $("#shopcart_quantity").val("");
+        $("#shopcart_price").val("");
     }
 
     // Updates the flash message area
@@ -34,30 +29,29 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create a ShopCart
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
-        let gender = $("#pet_gender").val();
-        let birthday = $("#pet_birthday").val();
+        let customer_id = $("#customer_id").val();
+        let product_id = $("#product_id").val();
+        let name = $("#shopcart_name").val();
+        let quantity = $("#shopcart_quantity").val();
+        let price = $("#shopcart_price").val();
 
         let data = {
+            "customer_id": customer_id,
+            "product_id": product_id,
             "name": name,
-            "category": category,
-            "available": available,
-            "gender": gender,
-            "birthday": birthday
+            "quantity": quantity,
+            "price": price,
         };
 
         $("#flash_message").empty();
-        
         let ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: `/shopcarts/${customer_id}/items`,
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -74,31 +68,30 @@ $(function () {
 
 
     // ****************************************
-    // Update a Pet
+    // Update a ShopCart
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
-        let gender = $("#pet_gender").val();
-        let birthday = $("#pet_birthday").val();
+        let customer_id = $("#customer_id").val();
+        let product_id = $("#product_id").val();
+        let name = $("#shopcart_name").val();
+        let quantity = $("#shopcart_quantity").val();
+        let price = $("#shopcart_price").val();
 
         let data = {
+            "customer_id": customer_id,
+            "product_id": product_id,
             "name": name,
-            "category": category,
-            "available": available,
-            "gender": gender,
-            "birthday": birthday
+            "quantity": quantity,
+            "price": price,
         };
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/pets/${pet_id}`,
+                url: `/shopcarts/${customer_id}/items/${product_id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -115,18 +108,25 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a ShopCart or an item in the ShopCart
     // ****************************************
 
     $("#retrieve-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
+        let customer_id = $("#customer_id").val();
+        let product_id = $("#product_id").val();
 
         $("#flash_message").empty();
 
+        let my_url = `/shopcarts/${customer_id}`;
+        if (product_id != "") {
+            // Checkout one item in a shopcart
+            my_url += `/items/${product_id}`;
+        }
+
         let ajax = $.ajax({
             type: "GET",
-            url: `/pets/${pet_id}`,
+            url: my_url,
             contentType: "application/json",
             data: ''
         })
@@ -145,25 +145,31 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete a ShopCart or an item in ShopCart
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
-
+        let customer_id = $("#customer_id").val();
+        let product_id = $("#product_id").val();
         $("#flash_message").empty();
+
+        let my_url = `/shopcarts/${customer_id}`;
+        if (product_id != "") {
+            // Delete one item in a shopcart
+            my_url += `/items/${product_id}`;
+        }
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/pets/${pet_id}`,
+            url: my_url,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("ShopCart has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -176,46 +182,50 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#customer_id").val("");
+        $("#product_id").val("");
         $("#flash_message").empty();
         clear_form_data()
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for a ShopCart
     // ****************************************
 
     $("#search-btn").click(function () {
 
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
+        let product_id = $("#product_id").val();
+        let quantity = $("#shopcart_quantity").val();
+        let price = $("#shopcart_price").val();
 
         let queryString = ""
 
-        if (name) {
-            queryString += 'name=' + name
+        if (product_id) {
+            queryString += 'product_id=' + product_id
         }
-        if (category) {
+        if (quantity) {
             if (queryString.length > 0) {
-                queryString += '&category=' + category
+                queryString += '&quantity=' + quantity
             } else {
-                queryString += 'category=' + category
+                queryString += 'quantity=' + quantity
             }
         }
-        if (available) {
+        if (price) {
             if (queryString.length > 0) {
-                queryString += '&available=' + available
+                queryString += '&price=' + price
             } else {
-                queryString += 'available=' + available
+                queryString += 'price=' + price
             }
+        }
+        if (queryString.length != 0) {
+            queryString = "?" + queryString
         }
 
         $("#flash_message").empty();
-
+        
         let ajax = $.ajax({
             type: "GET",
-            url: `/pets?${queryString}`,
+            url: `/shopcarts${queryString}`,
             contentType: "application/json",
             data: ''
         })
@@ -225,27 +235,26 @@ $(function () {
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
-            table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-2">Customer ID</th>'
+            table += '<th class="col-md-2">Product ID</th>'
             table += '<th class="col-md-2">Name</th>'
-            table += '<th class="col-md-2">Category</th>'
-            table += '<th class="col-md-2">Available</th>'
-            table += '<th class="col-md-2">Gender</th>'
-            table += '<th class="col-md-2">Birthday</th>'
+            table += '<th class="col-md-2">Quantity</th>'
+            table += '<th class="col-md-2">Price</th>'
             table += '</tr></thead><tbody>'
-            let firstPet = "";
+            let firstShopCart = "";
             for(let i = 0; i < res.length; i++) {
-                let pet = res[i];
-                table +=  `<tr id="row_${i}"><td>${pet._id}</td><td>${pet.name}</td><td>${pet.category}</td><td>${pet.available}</td><td>${pet.gender}</td><td>${pet.birthday}</td></tr>`;
+                let shopcart = res[i];
+                table +=  `<tr id="row_${i}"><td>${shopcart.customer_id}</td><td>${shopcart.product_id}</td><td>${shopcart.name}</td><td>${shopcart.quantity}</td><td>${shopcart.price}</td></tr>`;
                 if (i == 0) {
-                    firstPet = pet;
+                    firstShopCart = shopcart;
                 }
             }
             table += '</tbody></table>';
             $("#search_results").append(table);
 
             // copy the first result to the form
-            if (firstPet != "") {
-                update_form_data(firstPet)
+            if (firstShopCart != "") {
+                update_form_data(firstShopCart)
             }
 
             flash_message("Success")
@@ -255,6 +264,41 @@ $(function () {
             flash_message(res.responseJSON.message)
         });
 
+    });
+
+    // ****************************************
+    // Checkout a ShopCart
+    // ****************************************
+
+    $("#checkout-btn").click(function () {
+
+        let customer_id = $("#customer_id").val();
+        let product_id = $("#product_id").val();
+
+        let my_url = `/shopcarts/${customer_id}`;
+        if (product_id != "") {
+            // Checkout one item in a shopcart
+            my_url += `/items/${product_id}`;
+        }
+        my_url += "/checkout";
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "PUT",
+            url: my_url,
+            contentType: "application/json",
+            data: '',
+        })
+
+        ajax.done(function(res){
+            clear_form_data()
+            flash_message("ShopCart has been checked out!")
+        });
+
+        ajax.fail(function(res){
+            flash_message("Server error!")
+        });
     });
 
 })
