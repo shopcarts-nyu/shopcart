@@ -129,6 +129,25 @@ class TestShopCart(TestCase):
             new_shopcart["quantity"], test_shopcart.quantity, "Quantities does not match"
         )
 
+    def test_create_dup_shopcarts(self):
+        """Create a ShopCart with item in it"""
+        # get the id of a shopcart
+        shopcart = self._create_shopcarts(1)[0]
+        test_shopcart = ShopCartFactory()
+        test_shopcart.customer_id = shopcart.customer_id
+        logging.debug(test_shopcart)
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(test_shopcart.customer_id), 
+            json=test_shopcart.serialize(),
+            content_type=CONTENT_TYPE_JSON
+        )
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(test_shopcart.customer_id), 
+            json=test_shopcart.serialize(),
+            content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_get_shopcart(self):
         """Get a single ShopCart"""
         # get the id of a shopcart
