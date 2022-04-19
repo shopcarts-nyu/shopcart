@@ -74,6 +74,10 @@ def create_shopcarts_with_item(customer_id):
     shopcart.deserialize(request.get_json())
     if shopcart.customer_id != customer_id:
         abort(status.HTTP_400_BAD_REQUEST, "Customer ID in data must be {} as requested in URI. ".format(customer_id)) 
+    if ShopCart.find((shopcart.customer_id, shopcart.product_id)):
+        abort(status.HTTP_400_BAD_REQUEST, 
+            "ShopCart with customer id = {} and product id = {} already exists"
+            .format(customer_id, shopcart.product_id)) 
     shopcart.create()
     message = shopcart.serialize()
     location_url = url_for("get_shopcarts_with_item_id", customer_id=shopcart.customer_id, 

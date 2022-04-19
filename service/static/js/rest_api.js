@@ -194,14 +194,14 @@ $(function () {
 
     $("#search-btn").click(function () {
 
-        let name = $("#shopcart_name").val();
+        let product_id = $("#product_id").val();
         let quantity = $("#shopcart_quantity").val();
-        let price = $("#shopcart_price").val() == "true";
+        let price = $("#shopcart_price").val();
 
         let queryString = ""
 
-        if (name) {
-            queryString += 'name=' + name
+        if (product_id) {
+            queryString += 'product_id=' + product_id
         }
         if (quantity) {
             if (queryString.length > 0) {
@@ -222,7 +222,7 @@ $(function () {
         }
 
         $("#flash_message").empty();
-
+        
         let ajax = $.ajax({
             type: "GET",
             url: `/shopcarts${queryString}`,
@@ -285,7 +285,7 @@ $(function () {
         $("#flash_message").empty();
 
         let ajax = $.ajax({
-            type: "DELETE",
+            type: "PUT",
             url: my_url,
             contentType: "application/json",
             data: '',
@@ -293,7 +293,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("ShopCart has been Deleted!")
+            flash_message("ShopCart has been checked out!")
         });
 
         ajax.fail(function(res){
