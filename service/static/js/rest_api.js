@@ -10,7 +10,7 @@ $(function () {
         $("#shopcart_product_id").val(res.product_id);
         $("#shopcart_name").val(res.name);
         $("#shopcart_quantity").val(res.quantity);
-        $("#shopcart_price").val(res.quantity);
+        $("#shopcart_price").val(res.price);
     }
 
     /// Clears all form fields
