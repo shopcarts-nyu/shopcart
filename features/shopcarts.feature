@@ -45,15 +45,17 @@ Scenario: Update a ShopCart
     And I press the "Retrieve" button
     Then I should see "item1" in the "Name" field
     And I should see "2" in the "Quantity" field
+    And I should see "3000" in the "Price" field
     When I change "Name" to "item10"
     And I press the "Update" button
     Then I should see the message "Success"
     When I copy the "Customer ID" field
     And I press the "Clear" button
     And I paste the "Customer ID" field
+    And I set the "Product ID" to "1"
     And I press the "Retrieve" button
     Then I should see "item10" in the "Name" field
     When I press the "Clear" button
     And I press the "Search" button
-    Then I should see "item10" in the results
-    Then I should not see "item1" in the results
+    Then I should see "2 1 item10 " in the results
+    Then I should not see "2 1 item1 " in the results
