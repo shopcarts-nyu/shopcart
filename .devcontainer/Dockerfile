@@ -1,5 +1,5 @@
 # Image for a Python 3 development environment
-FROM python:3.9-slim
+FROM rofrano/pipeline-selenium:latest
 
 # Add any tools that are needed beyond Python 3.9
 RUN apt-get update && \
@@ -28,6 +28,7 @@ COPY requirements.txt .
 RUN python -m pip install --upgrade pip wheel && \
     pip install -r requirements.txt
 
+ENV PORT 8080
 EXPOSE 8080
 
 # Enable color terminal for docker exec bash

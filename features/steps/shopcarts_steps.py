@@ -24,3 +24,29 @@ import json
 import requests
 from behave import given
 from compare import expect
+
+
+@given('the following shopcarts')
+def step_impl(context):
+    """ Delete all ShopCarts and load new ones """
+    headers = {'Content-Type': 'application/json'}
+    # list all of the shopcarts and delete them one by one
+    context.resp = requests.get(context.base_url + '/shopcarts', headers=headers)
+    expect(context.resp.status_code).to_equal(200)
+    for shopcart in context.resp.json():
+        context.resp = requests.delete(context.base_url + '/shopcarts/' + str(shopcart["customer_id"]), headers=headers)
+        expect(context.resp.status_code).to_equal(204)
+    
+    # load the database with new shopcarts
+    create_url = context.base_url + '/shopcarts'
+    for row in context.table:
+        data = {
+            "customer_id": row['customer_id'],
+            "product_id": row['product_id'],
+            "name": row['name'],
+            "quantity": row['quantity'],
+            "price": row['price'],
+        }
+        payload = json.dumps(data)
+        context.resp = requests.post("{}/{}/items".format(create_url, data['customer_id']), data=payload, headers=headers)
+        expect(context.resp.status_code).to_equal(201)

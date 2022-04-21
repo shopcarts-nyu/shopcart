@@ -6,8 +6,8 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#customer_id").val(res.customer_id);
-        $("#product_id").val(res.product_id);
+        $("#shopcart_customer_id").val(res.customer_id);
+        $("#shopcart_product_id").val(res.product_id);
         $("#shopcart_name").val(res.name);
         $("#shopcart_quantity").val(res.quantity);
         $("#shopcart_price").val(res.quantity);
@@ -15,8 +15,8 @@ $(function () {
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#customer_id").val("");
-        $("#product_id").val("");
+        $("#shopcart_customer_id").val("");
+        $("#shopcart_product_id").val("");
         $("#shopcart_name").val("");
         $("#shopcart_quantity").val("");
         $("#shopcart_price").val("");
@@ -34,8 +34,8 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        let customer_id = $("#customer_id").val();
-        let product_id = $("#product_id").val();
+        let customer_id = $("#shopcart_customer_id").val();
+        let product_id = $("#shopcart_product_id").val();
         let name = $("#shopcart_name").val();
         let quantity = $("#shopcart_quantity").val();
         let price = $("#shopcart_price").val();
@@ -73,8 +73,8 @@ $(function () {
 
     $("#update-btn").click(function () {
 
-        let customer_id = $("#customer_id").val();
-        let product_id = $("#product_id").val();
+        let customer_id = $("#shopcart_customer_id").val();
+        let product_id = $("#shopcart_product_id").val();
         let name = $("#shopcart_name").val();
         let quantity = $("#shopcart_quantity").val();
         let price = $("#shopcart_price").val();
@@ -113,8 +113,8 @@ $(function () {
 
     $("#retrieve-btn").click(function () {
 
-        let customer_id = $("#customer_id").val();
-        let product_id = $("#product_id").val();
+        let customer_id = $("#shopcart_customer_id").val();
+        let product_id = $("#shopcart_product_id").val();
 
         $("#flash_message").empty();
 
@@ -150,8 +150,8 @@ $(function () {
 
     $("#delete-btn").click(function () {
 
-        let customer_id = $("#customer_id").val();
-        let product_id = $("#product_id").val();
+        let customer_id = $("#shopcart_customer_id").val();
+        let product_id = $("#shopcart_product_id").val();
         $("#flash_message").empty();
 
         let my_url = `/shopcarts/${customer_id}`;
@@ -182,8 +182,8 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#customer_id").val("");
-        $("#product_id").val("");
+        $("#shopcart_customer_id").val("");
+        $("#shopcart_product_id").val("");
         $("#flash_message").empty();
         clear_form_data()
     });
@@ -194,7 +194,7 @@ $(function () {
 
     $("#search-btn").click(function () {
 
-        let product_id = $("#product_id").val();
+        let product_id = $("#shopcart_product_id").val();
         let quantity = $("#shopcart_quantity").val();
         let price = $("#shopcart_price").val();
 
@@ -272,8 +272,8 @@ $(function () {
 
     $("#checkout-btn").click(function () {
 
-        let customer_id = $("#customer_id").val();
-        let product_id = $("#product_id").val();
+        let customer_id = $("#shopcart_customer_id").val();
+        let product_id = $("#shopcart_product_id").val();
 
         let my_url = `/shopcarts/${customer_id}`;
         if (product_id != "") {
