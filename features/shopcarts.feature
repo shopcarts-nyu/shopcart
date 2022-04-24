@@ -60,14 +60,13 @@ Scenario: Update a ShopCart
     Then I should see "2 1 item10 " in the results
     Then I should not see "2 1 item1 " in the results
 
-    Scenario: Read  shopcart
+    Scenario: Read item in shopcart
     When I visit the "Home Page"
     And I set the "Customer ID" to "1"
+    And I set the "Product ID" to "1"
     And I press the "Retrieve" button
     Then I should see "item1" in the "Name" field
     And I should see "1" in the "Quantity" field
     And I should see "300" in the "Price" field
-    And I should see "item2" in the "Name" field
-    And I should see "2" in the "Quantity" field
-    And I should see "500" in the "Price" field
+   
    
