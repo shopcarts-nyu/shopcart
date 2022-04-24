@@ -126,7 +126,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: my_url,
+            url: `/shopcarts/${customer_id}/items/${product_id}`,
             contentType: "application/json",
             data: ''
         })
@@ -193,7 +193,7 @@ $(function () {
     // ****************************************
 
     $("#search-btn").click(function () {
-
+        let customer_id = $("#shopcart_customer_id").val();
         let product_id = $("#shopcart_product_id").val();
         let quantity = $("#shopcart_quantity").val();
         let price = $("#shopcart_price").val();
@@ -219,8 +219,10 @@ $(function () {
         }
         if (queryString.length != 0) {
             queryString = "?" + queryString
+        } else if (customer_id) {
+            queryString = `/${customer_id}`
         }
-
+        
         $("#flash_message").empty();
         
         let ajax = $.ajax({
