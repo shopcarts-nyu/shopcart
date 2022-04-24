@@ -21,7 +21,7 @@ Scenario: List all shopcarts
 
 Scenario: List all items in the shopcart
     When I visit the "Home Page"
-    And I set "Customer ID" to "1"
+    And I set the "Customer ID" to "1"
     And I press the "Search" button
     Then I should see customer "1" with product "1" in the results
     And I should see customer "1" with product "2" in the results
