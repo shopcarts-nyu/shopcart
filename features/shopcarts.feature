@@ -59,3 +59,39 @@ Scenario: Update a ShopCart
     And I press the "Search" button
     Then I should see "2 1 item10 " in the results
     Then I should not see "2 1 item1 " in the results
+
+Scenario: Delete entire Shopcart
+    When I visit the "Home Page"
+    And I set the "Customer ID" to "1"
+    When I press the "Delete" button
+    Then I should see the message "ShopCart has been Deleted!"
+    When I press the "Search" button
+    Then I should not see "1 1 item1" in the results
+    And I should not see "1 1 item2" in the results 
+
+Scenario: Delete record in Shopcart
+    When I visit the "Home Page"
+    And I set the "Customer ID" to "2"
+    And I set the "Product ID" to "1"
+    When I press the "Delete" button
+    Then I should see the message "ShopCart has been Deleted!"
+    When I press the "Search" button
+    Then I should not see "2 1 item1" in the results
+
+Scenario: Checkout all items in Shopcart
+    When I visit the "Home Page"
+    And I set the "Customer ID" to "1"
+    When I press the "Checkout" button
+    Then I should see the message "ShopCart has been checked out!"
+    When I press the "Search" button
+    Then I should not see "1 1 item1" in the results
+    And I should not see "1 1 item2" in the results 
+
+Scenario: Checkout a item in Shopcart
+    When I visit the "Home Page"
+    And I set the "Customer ID" to "2"
+    And I set the "Product ID" to "1"
+    When I press the "Checkout" button
+    Then I should see the message "ShopCart has been checked out!"
+    When I press the "Search" button
+    Then I should not see "2 1 item1" in the results
