@@ -95,3 +95,12 @@ Scenario: Checkout a item in Shopcart
     Then I should see the message "ShopCart has been checked out!"
     When I press the "Search" button
     Then I should not see "2 1 item1" in the results
+
+Scenario: Read an item in Shopcart
+    When I visit the "Home Page"
+    And I set the "Customer ID" to "1"
+    And I set the "Product ID" to "1"
+    And I press the "Retrieve" button
+    Then I should see "item1" in the "Name" field
+    And I should see "1" in the "Quantity" field
+    And I should see "300" in the "Price" field 
