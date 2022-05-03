@@ -46,7 +46,7 @@ api = Api(app,
           version='1.0.0',
           title='ShopCart Demo REST API Service',
           description='This is a sample server ShopCart store server.',
-          default='shopcartss',
+          default='shopcarts',
           default_label='ShopCart shop operations',
           doc='/apidocs' # default also could use doc='/apidocs/'
          )
@@ -178,7 +178,7 @@ class ShopCartResource(Resource):
     @api.marshal_with(create_model)
     def get(self, customer_id):
         """
-        Retrieve a single ShopCart
+        Retrieve a single ShopCart with all items in it
         This endpoint will return a ShopCart based on it's id
         """
         app.logger.info("Request for shopcart with id: %s", customer_id)
@@ -292,7 +292,7 @@ class ItemResource(Resource):
     @api.marshal_with(create_model)
     def get(self, customer_id, product_id):
         """
-        Retrieve a single ShopCart
+        Retrieve a single ShopCart with specified item
         This endpoint will return a ShopCart based on it's id
         """
         app.logger.info("Request for shopcart with id: %s", customer_id)
